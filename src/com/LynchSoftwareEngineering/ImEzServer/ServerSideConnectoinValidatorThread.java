@@ -9,7 +9,6 @@ import java.nio.channels.SocketChannel;
  * 	still connected to the server. The client is set up to send data at least once every fifteen seconds.
  * 
  * @author Andrew F. Lynch
- * @date Aug 28, 2013
  */
 public class ServerSideConnectoinValidatorThread extends Thread{
 	TimeStampBufferedReader timeStampBufferedReader;

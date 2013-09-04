@@ -5,12 +5,21 @@ import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.net.Socket;
 
-public class NetWorkingObject extends Thread{
-	private SocketInListener socketInListener;
+/**
+ * NetWorkingObjectThread.java 
+ * This class manages network input and output. This class has a {@link SocketInListenerThread} object
+ * that waits for data and sends it to {@link SocketContaner} for processing. 
+ * 
+ * @author Andrew F. Lynch
+ *
+ */
+
+public class NetWorkingObjectThread extends Thread{
+	private SocketInListenerThread socketInListenerThread;
 	private SocketContaner socketContaner;
 	private Socket socket;
 	private BufferedWriter bufferedWriter;
-	public NetWorkingObject(SocketContaner socketContaner, Socket socket) {
+	public NetWorkingObjectThread(SocketContaner socketContaner, Socket socket) {
 		this.socketContaner = socketContaner;
 		this.socket = socket;
 		System.out.println(this + "NetWorkOject()");
@@ -19,8 +28,8 @@ public class NetWorkingObject extends Thread{
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		socketInListener = new SocketInListener(socketContaner,this, socket);
-		socketInListener.start();
+		socketInListenerThread = new SocketInListenerThread(socketContaner,this, socket);
+		socketInListenerThread.start();
 	}
 
 	public void send(String string){
@@ -42,9 +51,9 @@ public class NetWorkingObject extends Thread{
 	}
 
 	public void kill() {
-		socketInListener.interrupt();
-		socketInListener.setDaemon(true);
-		socketInListener = null;		
+		socketInListenerThread.interrupt();
+		socketInListenerThread.setDaemon(true);
+		socketInListenerThread = null;		
 	}
 
 }

@@ -1,5 +1,14 @@
 package com.LynchSoftwareEngineering.ImEzServer;
 
+/**SockContaner.java
+ * 	This class represents the client on the server. It is responsible being able to send and 
+ * 	receive data to the client and also to other SocketContaners. This class contains a 
+ *  {@link NetWorkObjectThread} that is multi threaded to handle to sending and receiving data
+ *  properly.  
+ * 
+ * @author Andrew F. Lynch
+ */
+
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.IOException;
@@ -12,7 +21,7 @@ import java.util.ArrayList;
 public class SocketContaner extends Thread {
 	//private static ImEzDataBase imEzDataBase;
 	private ConectionManger conectionManger;
-	private NetWorkingObject netWorkingObject; 
+	private NetWorkingObjectThread netWorkObjectThread; 
 	private ArrayList<String> chatBuddyArrayList;
 	private String userName;
 	private double randomKey;
@@ -26,8 +35,8 @@ public class SocketContaner extends Thread {
 	
 	public SocketContaner(Socket socket, ConectionManger conectionManger) {
 		this.conectionManger = conectionManger;
-		netWorkingObject = new NetWorkingObject(this, socket);
-		netWorkingObject.start();
+		netWorkObjectThread = new NetWorkingObjectThread(this, socket);
+		netWorkObjectThread.start();
 		chatBuddyArrayList = new ArrayList<String>();
 	}
 	
@@ -45,10 +54,10 @@ public class SocketContaner extends Thread {
 			conectionManger.remover(userName);
 			conectionManger.upDataAllChatReadyUsersToSubtractionsFromChatReadyHashSet(userName);
 		}
-		netWorkingObject.kill();
-		netWorkingObject = null;
-		netWorkingObject.interrupt();
-		netWorkingObject = null;
+		netWorkObjectThread.kill();
+		netWorkObjectThread = null;
+		netWorkObjectThread.interrupt();
+		netWorkObjectThread = null;
 	}
 	public boolean equals(SocketContaner socketContaner) {
 		if (socketContaner.getUserName().equals(userName)){
@@ -72,22 +81,22 @@ public class SocketContaner extends Thread {
 	public void setUserName(String userName){
 		this.userName = userName;
 		conectionManger.addToChatReadyUsers(randomKey, userName);
-		netWorkingObject.sendHashTagData("#LoggedIn");
+		netWorkObjectThread.sendHashTagData("#LoggedIn");
 	}
-	public NetWorkingObject getNetWorkingObject() {
-		return netWorkingObject;
-	}
-
-	public void setNetWorkingObject(NetWorkingObject netWorkingObject) {
-		this.netWorkingObject = netWorkingObject;
+	public NetWorkingObjectThread getNetWorkingObject() {
+		return netWorkObjectThread;
 	}
 
-	public void getUpDateChatReadyUsers() {
+	public void setNetWorkingObjectThread(NetWorkingObjectThread netWorkingObjectThread) {
+		this.netWorkObjectThread = netWorkingObjectThread;
+	}
+
+	public void getUpDateChatReadyUsers() { 
 		ArrayList<String> allChatReadyUsersArrayList = conectionManger.getAllChatReadyUsers();
-		netWorkingObject.sendHashTagData("#UserListAdd");
-		netWorkingObject.sendHashTagData(""+allChatReadyUsersArrayList.size());
+		netWorkObjectThread.sendHashTagData("#UserListAdd");
+		netWorkObjectThread.sendHashTagData(""+allChatReadyUsersArrayList.size());
 		for(String userName:allChatReadyUsersArrayList){
-			netWorkingObject.sendHashTagData(userName);
+			netWorkObjectThread.sendHashTagData(userName);
 		}
 	}
 

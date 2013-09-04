@@ -7,10 +7,18 @@ import java.net.Socket;
 import java.sql.DatabaseMetaData;
 import javax.swing.JLabel;
 
-public class SocketInListener extends Thread {
+
+/**SocketInListenerThread.java
+ * This class listener for in coming data and for forwards the data to the proper part of 
+ * the {@link SocketContaner} that it is associated with. 
+ * 
+ * @author Andrew F. Lynch
+ *
+ */
+public class SocketInListenerThread extends Thread {
 	private ImEzDataBase imEzDataBase;
 	private SocketContaner socketContaner;
-	private NetWorkingObject netWorkingObject;
+	private NetWorkingObjectThread netWorkingObject;
 	private ServerSideConnectoinValidatorThread serverSideConnectoinValidatorThread;
 	private boolean readyForNextStep = false;
 	private Socket socket;
@@ -18,8 +26,8 @@ public class SocketInListener extends Thread {
 	private String userName = null;
 	private String password = null;
 
-	public SocketInListener(SocketContaner socketContaner,
-			NetWorkingObject netWorkingObject, Socket socket) {
+	public SocketInListenerThread(SocketContaner socketContaner,
+			NetWorkingObjectThread netWorkingObject, Socket socket) {
 		this.socketContaner = socketContaner;
 		this.netWorkingObject = netWorkingObject;
 		this.socket = socket;
@@ -49,26 +57,6 @@ public class SocketInListener extends Thread {
 			while (true) {
 				serverInputCaseCheck(timeStampBufferedReader.readLine());
 			}
-				
-				/*
-				
-			newUser = timeStampBufferedReader.readLine();
-			if (newUser.equals("#newUser")) {
-				handelNewUserFlage();
-				System.out.println("newUser flag cought");
-			} else if (newUser.equals("#oldUser")) {
-				handelOldUserFlage();
-			} 
-			String buffer = newUser;
-				if (buffer == null || buffer.equals("#kill")) {
-					socketContaner.kill();
-				} else if (buffer.equals("#ChatBuddy")) {
-					socketContaner.plusMinus(timeStampBufferedReader.readLine());
-				} else {
-					socketContaner.sendToChatBuddies(buffer);
-				}
-			}
-		*/
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -128,7 +116,7 @@ public class SocketInListener extends Thread {
 					password = timeStampBufferedReader.readLine();
 					readyForNextStep = imEzDataBase.newUser(userName, password);
 					System.out.println("Username :" + userName + " password : "+ password+ "Ready for next step"+ readyForNextStep);
-				if (readyForNextStep == false) {// need to send user feed back
+				if (readyForNextStep == false) {
 					socketContaner.getNetWorkingObject().sendHashTagData("#BadLongIn");
 				} else {
 					socketContaner.setUserName(userName);
