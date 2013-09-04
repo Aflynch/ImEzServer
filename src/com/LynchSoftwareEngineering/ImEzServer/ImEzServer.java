@@ -10,8 +10,10 @@ import java.util.ArrayList;
 
 import javax.swing.JOptionPane;
 /** ImEzServer.java
- * This class 
- * 	
+ * This class acts as a port listener. As connections are made ServerSocket
+ * dispatches a new Socket. That Socket is add to a new {@link SocketContaner} 
+ * each time the connection is made. The {@link SocketContaner}s are managed by 
+ * the {@link ConectionManger}.
  * 
  * @author Andrew F. Lynch
  *
@@ -43,17 +45,6 @@ public class ImEzServer {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-        /*
-		while(true){	
-		}
-		*/
-		// TODO open up ServerSocket 
-		
-		// set up ObjectSocketArray
-		
-		// set up ImEzDataBase
-		
-		// 
 		
 	}
 }
