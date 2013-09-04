@@ -8,30 +8,31 @@ import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Scanner;
 
-/** ImEzDataBase.java
+/**
+ * ImEzDataBase.java 
+ * This class is a singleton that acts as the database for this project. Because of time constraints I 
+ * elected use a .txt  file. This is not my TODO list for upgrades in this project. 
  * 
  * @author Andrew F. Lynch
- *
+ * 
  */
 
-public class ImEzDataBase extends Thread{
+public class ImEzDataBase {
 	private static File file;
-	private static Scanner scanner;
 	private static ImEzDataBase imEzDataBase;
-	private static boolean firstRun = false;
+
 	protected ImEzDataBase() {
-		start();
-		
-		file = new  File("database.txt");
+		file = new File("database.txt");
 		try {
-			scanner = new Scanner (file);
+			Scanner scanner = new Scanner(file);
+			scanner.close();
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
 			newFile();
 		}
 
 	}
-	
+
 	private static void newFile() {
 		try {
 			PrintWriter p = new PrintWriter(file);
@@ -44,59 +45,89 @@ public class ImEzDataBase extends Thread{
 		}
 	}
 
-	public synchronized static ImEzDataBase getInstance(){
-		if(imEzDataBase != null){
+	public synchronized static ImEzDataBase getInstance() {
+		if (imEzDataBase != null) {
 			return imEzDataBase;
 		} else {
 			return new ImEzDataBase();
 		}
 	}
 
-	public synchronized boolean newUser(String userName, String passWord) throws IOException {
-		if(isAnOldUser(userName, passWord) == true){
+	public synchronized boolean newUser(String userName, String passWord) {
+		if (isAnOldUser(userName, passWord) == true) {
 			return false;
 		} else {
-			ArrayList<String> arrayList = new ArrayList<String>();
-			Scanner scanner = new Scanner(file);
-			while(scanner.hasNext()){
-				arrayList.add(scanner.nextLine());
-			}
-			arrayList.add(userName+","+passWord);
-			scanner.close();
-			PrintWriter p = new PrintWriter(file);
-			for(String str: arrayList){
+			ArrayList<String> userAndPasswordArrayList = getUserAndPasswordArrayList(userName, passWord);
+			addRewiteDataBase(userAndPasswordArrayList);
+		}
+		return true;
+	}
+
+	private void addRewiteDataBase(ArrayList<String> userAndPasswordArrayList) {
+		PrintWriter p;
+		try {
+			p = new PrintWriter(file);
+			for (String str : userAndPasswordArrayList) {
 				p.println(str);
 				p.flush();
 				System.out.println(str);
 			}
 			p.close();
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
 		}
-		return true;
+
 	}
 
-	public synchronized boolean isAnOldUser(String userName, String passWord) throws FileNotFoundException {
-		// Same userName different passwords are allowed. 
-		Scanner scanner = new Scanner(file);
-		while(scanner.hasNextLine()){//
-			if(scanner.nextLine().split(",")[0].equals(userName)) return true;
-		}
-		return false;
-	}
-	
-	public synchronized boolean oldUserRequestsLongIn(String userName, String passWord){
+	private ArrayList<String> getUserAndPasswordArrayList(String userName,String passWord) {
+		ArrayList<String> arrayList = new ArrayList<String>();
 		Scanner scanner;
 		try {
 			scanner = new Scanner(file);
-			
-			while(scanner.hasNextLine()){
-				String[] userNameAndPassWord = scanner.nextLine().split(",");
-				if(userNameAndPassWord[0].equals(userName)&& userNameAndPassWord[1].equals(passWord)) return true;
+			while (scanner.hasNext()) { // get all old yours and passwords
+				arrayList.add(scanner.nextLine());
 			}
+			arrayList.add(userName + "," + passWord); // add new user and passwords
+			scanner.close();
 		} catch (FileNotFoundException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+		return arrayList;
+	}
+
+	public synchronized boolean isAnOldUser(String userName, String passWord) {
+		// Same userName different passwords are allowed.
+		try {
+			Scanner scanner = new Scanner(file);
+			while (scanner.hasNextLine()) {
+				if (scanner.nextLine().split(",")[0].equals(userName)) {
+					scanner.close();
+					return true;
+				} 
+			}
+			scanner.close();			
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		} 
+		return false;
+
+	}
+
+	public synchronized boolean oldUserRequestsLongIn(String userName,String passWord) {
+		try {
+			Scanner scanner = new Scanner(file);
+			while (scanner.hasNextLine()) {
+				String[] userNameAndPassWord = scanner.nextLine().split(",");
+				if (userNameAndPassWord[0].equals(userName) && userNameAndPassWord[1].equals(passWord)) {
+					scanner.close();
+					return true;
+				}
+			}
+			scanner.close();
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		} 
 		return false;
 	}
-	
+
 }
