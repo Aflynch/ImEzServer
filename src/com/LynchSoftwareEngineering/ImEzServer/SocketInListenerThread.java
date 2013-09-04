@@ -20,6 +20,7 @@ public class SocketInListenerThread extends Thread {
 	private SocketContaner socketContaner;
 	private NetWorkingObjectThread netWorkingObject;
 	private ServerSideConnectoinValidatorThread serverSideConnectoinValidatorThread;
+
 	private boolean readyForNextStep = false;
 	private Socket socket;
 	private TimeStampBufferedReader timeStampBufferedReader;
@@ -125,6 +126,10 @@ public class SocketInListenerThread extends Thread {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
+	}
+	
+	public ServerSideConnectoinValidatorThread getServerSideConnectoinValidatorThread() {
+		return serverSideConnectoinValidatorThread;
 	}
 
 }

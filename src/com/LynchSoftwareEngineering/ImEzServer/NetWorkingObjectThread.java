@@ -19,6 +19,7 @@ public class NetWorkingObjectThread extends Thread{
 	private SocketContaner socketContaner;
 	private Socket socket;
 	private BufferedWriter bufferedWriter;
+	
 	public NetWorkingObjectThread(SocketContaner socketContaner, Socket socket) {
 		this.socketContaner = socketContaner;
 		this.socket = socket;
@@ -51,7 +52,7 @@ public class NetWorkingObjectThread extends Thread{
 	}
 
 	public void kill() {
-		socketInListenerThread.interrupt();
+		socketInListenerThread.getServerSideConnectoinValidatorThread().kill();
 		socketInListenerThread.setDaemon(true);
 		socketInListenerThread = null;		
 	}

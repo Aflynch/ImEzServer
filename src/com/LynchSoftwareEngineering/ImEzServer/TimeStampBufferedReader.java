@@ -11,7 +11,7 @@ import java.io.Reader;
 */
 public class TimeStampBufferedReader extends BufferedReader {
 
-	long timeOfLastReadLine;
+	private long timeOfLastReadLine;
 
 	public TimeStampBufferedReader(Reader in) {
 		super(in);
@@ -20,7 +20,7 @@ public class TimeStampBufferedReader extends BufferedReader {
 	@Override
 	public String readLine() throws IOException {
 		String buffer = super.readLine();
-		System.out.println("\n----------"+buffer);
+		System.out.println("----------"+buffer);
 		timeOfLastReadLine = System.currentTimeMillis();
 		return buffer;
 	}
@@ -28,4 +28,5 @@ public class TimeStampBufferedReader extends BufferedReader {
 	public long getTimeOfLastReadLine() {
 		return timeOfLastReadLine;
 	}
+	
 }
