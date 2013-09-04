@@ -13,18 +13,21 @@ import java.nio.channels.SocketChannel;
 public class ServerSideConnectoinValidatorThread extends Thread{
 	TimeStampBufferedReader timeStampBufferedReader;
 	SocketContaner socketContaner;
-	final long timeInterval = 19500;
+	final long timeInterval = 25000;
 	long timeToNextInterval;
+	private boolean kill = false;
 	
 	public ServerSideConnectoinValidatorThread(TimeStampBufferedReader timeStampBufferedReader, SocketContaner socketContaner) {
 		this.timeStampBufferedReader = timeStampBufferedReader;
 		this.socketContaner = socketContaner;
+		setDaemon(true);
 	}
 	
 	@Override
 	public void run() {
 		super.run();
 		while(true){
+			if(kill) break;
 			validateClient();
 			try {
 				sleep(timeToNextInterval);
@@ -35,10 +38,15 @@ public class ServerSideConnectoinValidatorThread extends Thread{
 	}
 	private void validateClient() {
 		long timeDifference = System.currentTimeMillis() - timeStampBufferedReader.getTimeOfLastReadLine();
-		if (timeDifference > timeInterval) {
+		if (timeDifference > timeInterval && kill) {
+			System.out.println("Connection Time Out : "+timeDifference +" Ez2 see -------------------------");
 			socketContaner.kill();
 		} else {
 			timeToNextInterval  = timeInterval - timeDifference;
 		}
+	}
+
+	public void kill() {
+		kill = true;
 	}
 }

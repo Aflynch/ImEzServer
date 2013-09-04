@@ -56,8 +56,6 @@ public class SocketContaner extends Thread {
 		}
 		netWorkObjectThread.kill();
 		netWorkObjectThread = null;
-		netWorkObjectThread.interrupt();
-		netWorkObjectThread = null;
 	}
 	public boolean equals(SocketContaner socketContaner) {
 		if (socketContaner.getUserName().equals(userName)){
