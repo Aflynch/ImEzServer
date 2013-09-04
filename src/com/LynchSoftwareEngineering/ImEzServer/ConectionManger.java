@@ -11,7 +11,7 @@ package com.LynchSoftwareEngineering.ImEzServer;
  * chatReadyUsersUserNameKeyHashMap. 
  * 
  * When {@link SocketContaner}s are transferred in or out of the chatReadyUsersUserNameKeyHashMap it sends and update 
- * signal to all of the clients that are on line. 
+ * signal to all of the clients that are online. 
  * 
  * @author Andrew F. Lynch
  */

@@ -9,7 +9,7 @@ import javax.swing.JLabel;
 
 
 /**SocketInListenerThread.java
- * This class listener for in coming data and for forwards the data to the proper part of 
+ * This class listens for in coming data and for forwards the data to the proper part of 
  * the {@link SocketContaner} that it is associated with. 
  * 
  * @author Andrew F. Lynch
@@ -21,7 +21,7 @@ public class SocketInListenerThread extends Thread {
 	private NetWorkingObjectThread netWorkingObject;
 	private ServerSideConnectoinValidatorThread serverSideConnectoinValidatorThread;
 
-	private boolean readyForNextStep = false;
+	private boolean didLogIn = false;
 	private Socket socket;
 	private TimeStampBufferedReader timeStampBufferedReader;
 	private String userName = null;
@@ -48,9 +48,7 @@ public class SocketInListenerThread extends Thread {
 
 	private void startLogInProcess() {
 		String newUser, nextLineString;
-		
 		try {
-			
 			nextLineString = timeStampBufferedReader.readLine();
 			serverSideConnectoinValidatorThread = new ServerSideConnectoinValidatorThread(timeStampBufferedReader, socketContaner);
 			serverSideConnectoinValidatorThread.start();
@@ -67,22 +65,21 @@ public class SocketInListenerThread extends Thread {
 		while (true) {
 			try {
 			switch (nextLineString){
-			case"#newUser"  : handelNewUserFlage();
+			case"#newUser"  		: handelNewUserFlage();
 					break;
-			case"#checkIn"  : // No data needs to be sent
+			case"#checkIn"  			: // No data needs to be sent
 					break;
-			case"#oldUser"  : handelOldUserFlage();
+			case"#oldUser"  			: handelOldUserFlage();
 					break;
-			case"#kill"     : socketContaner.kill();
+			case"#kill"   			  	: socketContaner.kill();
 					break;
-			case"#ChatBuddy": socketContaner.plusMinus(timeStampBufferedReader.readLine());
+			case"#ChatBuddy"		: socketContaner.plusMinus(timeStampBufferedReader.readLine());
 					break;
-			default			: socketContaner.sendToChatBuddies(nextLineString);
+			default							: socketContaner.sendToChatBuddies(nextLineString);
 					break;
 			}
 			nextLineString = timeStampBufferedReader.readLine();
 			} catch (IOException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 		}
@@ -92,9 +89,9 @@ public class SocketInListenerThread extends Thread {
 		try {
 					userName = timeStampBufferedReader.readLine();
 					password = timeStampBufferedReader.readLine();
-					readyForNextStep = imEzDataBase.oldUserRequestsLongIn(userName, password);
-					System.out.println("Username :" + userName + " password : "+ password+ "Ready for next step"+ readyForNextStep);
-				if (readyForNextStep == false) {
+					didLogIn = imEzDataBase.oldUserRequestsLongIn(userName, password);
+					System.out.println("Username :" + userName + " password : "+ password+ "Ready for next step"+ didLogIn);
+				if (didLogIn == false) {
 					socketContaner.getNetWorkingObject().sendHashTagData("#BadLongIn");
 				} else {
 					ImEzDataBase im = ImEzDataBase.getInstance();
@@ -115,9 +112,9 @@ public class SocketInListenerThread extends Thread {
 		try {
 					userName = timeStampBufferedReader.readLine();
 					password = timeStampBufferedReader.readLine();
-					readyForNextStep = imEzDataBase.newUser(userName, password);
-					System.out.println("Username :" + userName + " password : "+ password+ "Ready for next step"+ readyForNextStep);
-				if (readyForNextStep == false) {
+					didLogIn = imEzDataBase.newUser(userName, password);
+					System.out.println("Username :" + userName + " password : "+ password+ "Ready for next step"+ didLogIn);
+				if (didLogIn == false) {
 					socketContaner.getNetWorkingObject().sendHashTagData("#BadLongIn");
 				} else {
 					socketContaner.setUserName(userName);

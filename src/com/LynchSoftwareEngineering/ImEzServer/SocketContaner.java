@@ -1,7 +1,7 @@
 package com.LynchSoftwareEngineering.ImEzServer;
 
 /**SockContaner.java
- * 	This class represents the client on the server. It is responsible being able to send and 
+ * 	This class represents the client on the server. It is responsible for being able to send and 
  * 	receive data to the client and also to other SocketContaners. This class contains a 
  *  {@link NetWorkObjectThread} that is multi threaded to handle to sending and receiving data
  *  properly.  
@@ -19,7 +19,6 @@ import java.nio.CharBuffer;
 import java.util.ArrayList;
 
 public class SocketContaner extends Thread {
-	//private static ImEzDataBase imEzDataBase;
 	private ConectionManger conectionManger;
 	private NetWorkingObjectThread netWorkObjectThread; 
 	private ArrayList<String> chatBuddyArrayList;

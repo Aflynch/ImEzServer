@@ -3,11 +3,4 @@ Johnny,1234
 Bill,1234
 Andrew,1234
 JohnnyBeGood,1234
-tree,NewUserPassword
-timmy,NewUserPassword
-left,NewUserPassword
-right,NewUserPassword
-Timer,1234
-TimesNew,NewUserPassword
-Bed,NewUserPassword
-kill,NewUserPassword
+
